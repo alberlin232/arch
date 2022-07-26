@@ -1,4 +1,5 @@
 from __future__ import annotations
+from multiprocessing.dummy import Array
 
 from typing import (
     Any,
@@ -637,6 +638,21 @@ class IIDBootstrap(metaclass=DocStringInheritor):
         else:
             assert isinstance(self._generator, RandomState)
             self._generator.seed(value)
+
+    def add_data(self, **kwargs: ArrayLike) -> None:
+        """
+        Add data to the bootstrap
+
+        Parameters
+        ----------
+        **kwargs : {str: ArrayLike}
+            Keyword arguments containing the data to add.
+            The keys must be the same as the names of the inputs.
+        """
+        for key, value in kwargs.items():
+            if key in self._kwargs:
+                raise ValueError(key + "alread exists in kwargs")
+            self._kwargs[key] = value
 
     def reset(self, use_seed: bool = True) -> None:
         """
